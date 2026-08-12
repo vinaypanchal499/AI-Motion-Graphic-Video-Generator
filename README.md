@@ -1,268 +1,115 @@
-# 🎬 Remotion Prompt to Motion Graphics
+**# Remotion Prompt to Motion Graphics**
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source
-        media="(prefers-color-scheme: dark)"
-        srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng"
-      />
-      <img
-        alt="Animated Remotion Logo"
-        src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif"
-      />
-    </picture>
-  </a>
-</p>
+\<p *align*="center">
+  \<a href="[https://github.com/remotion-dev/logo](https://github.com/remotion-dev/logo)">
+    \<picture>
+      \<source media="(prefers-color-scheme: dark)" srcset="[https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng](https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng)">
+      \<img alt="Animated Remotion Logo" src="[https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif](https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif)">
+    \</picture>
+  \</a>
+\</p>
 
-An **AI-powered motion graphics generator** that transforms natural-language prompts into Remotion animation code and dynamically generates motion graphics.
+AI-powered motion graphics generator that transforms natural language prompts into Remotion code.
 
-## 🚀 Features
+**## Architecture**
 
-* 🤖 AI-powered motion graphics generation
-* 📝 Natural-language prompt processing
-* 🎨 Animated typography and visual effects
-* 📊 Animated data visualizations
-* 💬 Messaging and UI animations
-* 🔄 Smooth scene transitions
-* 🌊 Spring-based natural animations
-* 📱 Social-media-ready motion graphics
-* 👀 Live animation preview
-* 🎥 Client-side video rendering
-* 💻 AI-generated Remotion code
+\`\`\`
+User Prompt → Validation → Skill Detection → Code Generation → Sanitization → Live Preview
+\`\`\`
 
-## 🏗️ Architecture
+**## How It Works**
 
-```text
-User Prompt
-     ↓
-Prompt Validation
-     ↓
-Skill Detection
-     ↓
-AI Code Generation
-     ↓
-Code Sanitization
-     ↓
-Live Preview
-     ↓
-Motion Graphic Rendering
-```
+**### 1. Validation**
 
-## ⚙️ How It Works
+Before expensive model calls, a lightweight classifier determines if the prompt describes valid motion graphics content.
 
-### 1. Prompt Validation
+**\*\*Accepted\*\***: animated text, data visualizations, UI animations, social media content, abstract motion graphics
 
-Before sending a request to the AI model, the application determines whether the prompt describes valid motion-graphics content.
+**\*\*Rejected\*\***: questions, conversational requests, non-visual tasks
 
-**Accepted:**
+**### 2. Skill Detection**
 
-* Animated text
-* Data visualizations
-* UI animations
-* Social media content
-* Abstract motion graphics
-* Logo animations
-* Visual effects
+The system analyzes the prompt to identify which **\*\*skills\*\*** are relevant. Skills are modular knowledge units that provide domain-specific guidance to the code generation model.
 
-**Rejected:**
+There are two types of skills:
 
-* General questions
-* Conversational requests
-* Non-visual tasks
-* Unrelated requests
+\- **\*\*Guidance Skills\*\*** - Pattern libraries with best practices for specific domains (charts, typography, transitions, etc.)
+\- **\*\*Example Skills\*\*** - Complete working code references that demonstrate specific animation patterns
 
-### 2. Skill Detection
+This approach keeps the base prompt lightweight while dynamically injecting only the relevant expertise for each request.
 
-The system analyzes the user's prompt and identifies the skills required to generate the animation.
+**### 3. Code Generation**
 
-Skills are modular knowledge units that provide domain-specific guidance to the AI code-generation process.
+Uses a one-shot prompt with the base Remotion knowledge plus any detected skills. The generated code follows these principles:
 
-There are two main types:
+\- **\*\*Constants-first design\*\*** - All text, colors, and timing values are declared as editable constants at the top
+\- **\*\*Aesthetic defaults\*\*** - Guidance on visual polish, spacing, and animation feel
+\- **\*\*Crossfade patterns\*\*** - Smooth state transitions without layout jumps
+\- **\*\*Spring physics\*\*** - Natural, organic motion using Remotion's spring() function
 
-**Guidance Skills**
+**### 4. Sanitization & Compilation**
 
-Pattern libraries containing best practices for specific animation domains.
+The response is cleaned (removing markdown wrappers and trailing commentary), then compiled in-browser using Babel. The compiled component renders directly in the Remotion Preview with all necessary APIs injected.
 
-**Example Skills**
+**### 5. Web Rendering**
 
-Complete working code examples that demonstrate specific animation patterns.
+Videos are rendered directly in the browser using \`@remotion/web-renderer\`. No server-side rendering infrastructure needed — just click "Render & Download" and the video is encoded client-side as an MP4.
 
-This approach allows the application to provide only the relevant expertise for each request.
+**## Skills System**
 
-### 3. AI Code Generation
+Skills enable contextual expertise without bloating every prompt. Located in \`src/skills/\`:
 
-The system generates Remotion-compatible animation code using AI.
+**### Guidance Skills**
 
-The generated code follows several principles:
+\| Skill              | Purpose                                                                                 |
+\| ------------------ | --------------------------------------------------------------------------------------- |
+\| **\*\*charts\*\***         | Data visualization patterns - bar charts, pie charts, axis labels, staggered animations |
+\| **\*\*typography\*\***     | Kinetic text - typewriter effects, word carousels, text highlights                      |
+\| **\*\*messaging\*\***      | Chat UI - bubble layouts, WhatsApp/iMessage styling, staggered entrances                |
+\| **\*\*transitions\*\***    | Scene changes - TransitionSeries, fade/slide/wipe effects                               |
+\| **\*\*sequencing\*\***     | Timing control - Sequence, Series, staggered delays                                     |
+\| **\*\*spring-physics\*\*** | Organic motion - spring configs, bounce effects, chained animations                     |
+\| **\*\*social-media\*\***   | Platform-specific formats - aspect ratios, safe zones                                   |
+\| **\*\*3d\*\***             | Three.js integration - 3D scenes, camera setup                                          |
 
-* **Constants-first design** — Text, colors, timing, and other editable values are organized as constants.
-* **Aesthetic defaults** — Guidance for spacing, typography, visual hierarchy, and animation quality.
-* **Crossfade patterns** — Smooth transitions between visual states.
-* **Spring physics** — Natural motion using Remotion's `spring()` function.
-* **Reusable patterns** — Animation structures can be adapted to different prompts.
+**### Example Skills (Code Snippets)**
 
-### 4. Sanitization & Compilation
+Example skills provide complete working references (histogram, chat messages, typewriter effects, etc.) that demonstrate these patterns in action. We think of them like implementation archetypes that can be used and adjusted for the user prompt.
 
-The generated AI response is cleaned before execution.
+**## Usage Tips**
 
-The application removes unnecessary Markdown wrappers and trailing explanations, then prepares the generated component for rendering.
+**\*\*Prompting best practices:\*\***
 
-The generated animation code is compiled and displayed in the Remotion preview environment.
+\- Be specific about colors, timing, and layout ("green sent bubbles on the right, gray received on the left")
+\- Include data directly in the prompt for charts and visualizations
+\- Describe the animation feel you want ("bouncy spring entrance", "smooth fade", "staggered timing")
 
-### 5. Web Rendering
+**\*\*Images:\*\***
 
-The application uses Remotion's web rendering capabilities to generate motion graphics directly from the browser environment.
+\- Direct image uploads are not supported
+\- Reference images via URL - the generated code will use Remotion's \`\<Img>\` component
+\- Example: *\_"Create a DVD screensaver animation of this image* [*https://example.com/logo.png*](https://example.com/logo.png)*"\_*
 
-Users can preview the generated animation and render the final output through the application.
+**\*\*What works well:\*\***
 
-## 🧩 Skills System
+\- Kinetic typography and text animations
+\- Data visualizations with animated entrances
+\- Chat/messaging UI mockups
+\- Social media content (Stories, Reels, TikTok)
+\- Logo animations and brand intros
+\- Abstract motion graphics
 
-Skills provide contextual animation expertise without adding unnecessary information to every AI prompt.
+**## Setup**
 
-Skills are located in:
+1\. Copy \`.env.example\` to \`.env.local\` and add your Google Gemini API key.
+   You can get your API key from [Google AI Studio]\([https://aistudio.google.com/api-keys](https://aistudio.google.com/api-keys)).
 
-```text
-src/skills/
-```
+\`\`\`env
+GOOGLE\_GENERATIVE\_AI\_API\_KEY=your-key-here
+\`\`\`
 
-### Guidance Skills
+**## Commands**
 
-| Skill              | Purpose                                                                |
-| ------------------ | ---------------------------------------------------------------------- |
-| **charts**         | Bar charts, pie charts, axis labels, and animated data visualization   |
-| **typography**     | Kinetic text, typewriter effects, word animations, and text highlights |
-| **messaging**      | Chat UI, message bubbles, and staggered entrances                      |
-| **transitions**    | Fade, slide, wipe, and scene transitions                               |
-| **sequencing**     | Timing, sequences, delays, and staggered animations                    |
-| **spring-physics** | Spring configurations, bounce effects, and natural motion              |
-| **social-media**   | Social-media aspect ratios and safe zones                              |
-| **3d**             | Three.js-based 3D scenes and camera animations                         |
-
-### Example Skills
-
-Example skills contain complete working animation references such as:
-
-* Histogram animations
-* Chat message animations
-* Typewriter effects
-* Data visualizations
-* Transition examples
-* Typography animations
-
-These examples act as implementation patterns that can be adapted according to the user's prompt.
-
-## 💡 Usage Tips
-
-For better results, provide specific instructions in your prompt.
-
-### Be specific about design
-
-```text
-Create green sent message bubbles on the right and gray received messages on the left.
-```
-
-### Include data for charts
-
-```text
-Create a bar chart showing monthly sales:
-January: 20
-February: 35
-March: 50
-April: 70
-```
-
-### Describe the animation style
-
-```text
-Create a smooth fade-in animation with a bouncy spring entrance.
-```
-
-## 🎨 What Works Well
-
-The application is suitable for generating:
-
-* Kinetic typography
-* Animated text
-* Data visualizations
-* Chat and messaging UI
-* Social media content
-* Instagram Reels
-* TikTok-style videos
-* Logo animations
-* Brand introductions
-* Abstract motion graphics
-* UI animations
-* Scene transitions
-
-## 🖼️ Images
-
-The application supports referencing images through URLs in generated animation code.
-
-For example:
-
-```text
-Create a DVD screensaver animation using this image:
-https://example.com/logo.png
-```
-
-The generated Remotion code can use the image as part of the animation.
-
-## 🛠️ Technology Stack
-
-### Frontend
-
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
-
-### Backend
-
-* Next.js API Routes
-* Node.js
-
-### AI
-
-* Google Gemini API
-
-### Animation & Video
-
-* Remotion
-* Remotion Web Renderer
-
-### Build & Development
-
-* Next.js 16
-* Turbopack
-* npm
-* TypeScript
-
-## 📁 Project Structure
-
-```text
-prompt-to-motion-graphics-saas-main/
-│
-├── app/
-│   ├── api/
-│   │   └── generate/
-│   ├── code-examples/
-│   ├── generate/
-│   ├── icon.png
-│   ├── layout.*
-│   └── page.*
-│
-├── src/
-│   └── skills/
-│
-├── public/
-│
-├── package.json
-├── package-lock.json
-├── next.config.*
-├── tsconfig.json
-└── README.md
-```
 
 ## ⚙️ Setup
 
@@ -349,142 +196,18 @@ The production server was also successfully started using:
 ```bash
 npm run start
 ```
+**## Docs**
 
-Successful server output:
+Get started with Remotion by reading the [fundamentals page]\([https://www.remotion.dev/docs/the-fundamentals](https://www.remotion.dev/docs/the-fundamentals)).
 
-```text
-▲ Next.js 16.2.3
+**## Help**
 
-- Local: http://localhost:3000
-- Network: http://192.168.1.41:3000
-✓ Ready
-```
+We provide help on our [Discord server]\([https://discord.gg/6VzzNDwUwV](https://discord.gg/6VzzNDwUwV)).
 
-## 📡 Application Routes
+**## Issues**
 
-| Route            | Description                       |
-| ---------------- | --------------------------------- |
-| `/`              | Main application page             |
-| `/generate`      | Generate motion graphics          |
-| `/code-examples` | View animation examples           |
-| `/api/generate`  | AI motion-graphics generation API |
-| `/icon.png`      | Application icon                  |
+Found an issue with Remotion? [File an issue here]\([https://github.com/remotion-dev/remotion/issues/new](https://github.com/remotion-dev/remotion/issues/new)).
 
-## 🔄 Application Workflow
+**## License**
 
-```text
-User enters prompt
-        ↓
-Next.js Frontend
-        ↓
-Prompt Validation
-        ↓
-Skill Detection
-        ↓
-Google Gemini API
-        ↓
-Generate Remotion Code
-        ↓
-Code Sanitization
-        ↓
-Live Preview
-        ↓
-Motion Graphic Rendering
-        ↓
-Final Output
-```
-
-## ⚠️ Next.js Workspace Warning
-
-During development and production builds, Next.js may display a warning about multiple lockfiles:
-
-```text
-Warning: Next.js inferred your workspace root, but it may not be correct.
-We detected multiple lockfiles.
-```
-
-The project still builds and runs successfully.
-
-The warning occurs because multiple `package-lock.json` files exist in the parent and project directories.
-
-If required, the workspace configuration can be adjusted by removing the unnecessary lockfile or configuring the appropriate workspace root in the Next.js configuration.
-
-## 📚 Commands
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Start development server
-
-```bash
-npm run dev
-```
-
-### Create production build
-
-```bash
-npm run build
-```
-
-### Start production server
-
-```bash
-npm run start
-```
-
-## 🎯 Project Objective
-
-The objective of this project is to simplify motion-graphics creation by allowing users to describe animations using natural language.
-
-Instead of manually writing complex animation code, users can provide a prompt and the AI generates the required Remotion animation code.
-
-## 🔮 Future Enhancements
-
-* User authentication
-* Project history
-* Cloud video storage
-* More animation templates
-* Image-to-video generation
-* Voice-to-prompt generation
-* Custom fonts and assets
-* Multiple export formats
-* Advanced video editing
-* Team collaboration
-* Improved AI animation generation
-
-## 👨‍💻 Author
-
-**Vinay**
-
-Computer Science & Engineering Graduate
-
-### Skills
-
-* Java
-* Python
-* JavaScript
-* TypeScript
-* React.js
-* Next.js
-* Node.js
-* SQL
-* Full Stack Development
-* AI Application Development
-
-## 📄 License
-
-This project is developed for educational and project purposes.
-
-Third-party technologies used in this project may have their own licensing requirements. Refer to the respective project licenses before using this application commercially.
-
-## 🙏 Acknowledgements
-
-* Remotion
-* Google Gemini
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
+Note that for some entities a company license is needed. [Read the terms here]\([https://github.com/remotion-dev/remotion/blob/main/LICENSE.md](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md)).
